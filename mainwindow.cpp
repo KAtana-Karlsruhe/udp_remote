@@ -92,6 +92,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
     {
       case Qt::Key_Escape:
         m_speed = 0;
+        ui->checkBox_tempomat->setCheckState(Qt::Unchecked);
         sendControl(0, m_steering);
         return;
       case Qt::Key_Up:
