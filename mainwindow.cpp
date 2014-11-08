@@ -7,7 +7,14 @@ MainWindow::MainWindow(QWidget *parent) :
   ui(new Ui::MainWindow),
   m_connected(false)
 {
+  m_controls.resize(4, false);
+
   ui->setupUi(this);
+
+  ui->spinBox_speed->setMaximum(MAX_SPEED);
+  ui->spinBox_speed->setMinimum(-MAX_BACKWARD);
+  ui->spinBox_steer->setMaximum(MAX_RIGHT);
+  ui->spinBox_steer->setMinimum(MIN_LEFT);
 
   // Timer
   m_timer = new QTimer(this);
@@ -140,69 +147,81 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 }
 void MainWindow::slotUpdateControl()
 {
-  float speed = m_speed;
-  qint8 steering = m_steering;
+  float speed;
+  qint8 steering;
 
-  if (m_controls[BACKWARD])
+  if (ui->checkBox_tempomat->checkState() == Qt::Unchecked)
   {
-    if (speed > DECEL)
-      speed -= DECEL;
-    else if (speed <= 0)
+    speed = m_speed;
+    steering = m_steering;
+
+    if (m_controls[BACKWARD])
     {
-      if (speed > (-MAX_BACKWARD + ACCEL) && m_lifted)
+      if (speed > DECEL)
+        speed -= DECEL;
+      else if (speed <= 0)
       {
-        speed -= ACCEL;
+        if (speed > (-MAX_BACKWARD + ACCEL) && m_lifted)
+        {
+          speed -= ACCEL;
+        }
+      }
+      else
+        speed = 0;
+    }
+    else if (m_controls[FORWARD])
+    {
+      m_lifted = false;
+      if (speed <= (MAX_SPEED-ACCEL))
+        speed += ACCEL;
+    }
+    else
+    {
+      if (speed > ROLL)
+        speed -= ROLL;
+      else if (speed < -ROLL)
+        speed += ROLL;
+      else
+      {
+        m_lifted = true;
+        speed = 0;
       }
     }
-    else
-      speed = 0;
-  }
-  else if (m_controls[FORWARD])
-  {
-    m_lifted = false;
-    if (speed <= (MAX_SPEED-ACCEL))
-      speed += ACCEL;
-  }
-  else
-  {
-    if (speed > ROLL)
-      speed -= ROLL;
-    else if (speed < -ROLL)
-      speed += ROLL;
-    else
+    if (m_controls[LEFT])
     {
-      m_lifted = true;
-      speed = 0;
-    }
-  }
-  if (m_controls[LEFT])
-  {
-    if (steering >= (MIN_LEFT + SPEED_STEERING))
-      steering -= SPEED_STEERING;
-  }
-  else if (m_controls[RIGHT])
-  {
-    if (steering <= (MAX_RIGHT - SPEED_STEERING))
-      steering += SPEED_STEERING;
-  }
-  else
-  {
-    if (steering > 0)
-    {
-      if (steering > SPEED_STEERING)
+      if (steering >= (MIN_LEFT + SPEED_STEERING))
         steering -= SPEED_STEERING;
-      else
-        steering = 0;
     }
-    else if (steering < 0)
+    else if (m_controls[RIGHT])
     {
-      if (steering < -SPEED_STEERING)
+      if (steering <= (MAX_RIGHT - SPEED_STEERING))
         steering += SPEED_STEERING;
-      else
-        steering = 0;
     }
+    else
+    {
+      if (steering > 0)
+      {
+        if (steering > SPEED_STEERING)
+          steering -= SPEED_STEERING;
+        else
+          steering = 0;
+      }
+      else if (steering < 0)
+      {
+        if (steering < -SPEED_STEERING)
+          steering += SPEED_STEERING;
+        else
+          steering = 0;
+      }
+    }
+  }
+  else
+  {
+    speed = ui->spinBox_speed->value();
+    steering = ui->spinBox_steer->value();
   }
 
+  // Check for changes and send
   if (speed != m_speed || steering != m_steering)
   {
     m_speed = (qint8)speed;
