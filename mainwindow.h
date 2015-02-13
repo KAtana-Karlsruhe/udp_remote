@@ -16,12 +16,13 @@ const u_int8_t RIGHT = 3;
 
 const u_int8_t CMD_CONTROL = 0x5e;
 const u_int8_t CMD_ALIVE = 0x3f;
+const u_int8_t CMD_TRIGGER = 0x4e;
 
 
-const int8_t MAX_SPEED = 65;
-const int8_t MAX_BACKWARD = 40;
-const int8_t MIN_LEFT = -75;
-const int8_t MAX_RIGHT = +75;
+const int8_t MAX_SPEED = 40;
+const int8_t MAX_BACKWARD = 35;
+const int8_t MIN_LEFT = -100;
+const int8_t MAX_RIGHT = +100;
 
 const int8_t SPEED_STEERING = 5;
 
@@ -64,12 +65,14 @@ private:
 
   void sendControl(qint8 speed, qint8 steering);
   void sendAlive();
+  void sendTrigger(quint8 value);
 
 private slots:
   void processButtonClick();
   void keyPressEvent(QKeyEvent* event);
   void keyReleaseEvent(QKeyEvent* event);
   void slotUpdateControl();
+  void enabledCruiseControl(bool checked);
 
 
 };

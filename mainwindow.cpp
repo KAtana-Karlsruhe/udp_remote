@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(processButtonClick()));
   connect(ui->pushButton_ende, SIGNAL(clicked()), this, SLOT(processButtonClick()));
 
+  // Cruise control checkbox
+  connect(ui->checkBox_tempomat, SIGNAL(toggled(bool)), this, SLOT(enableCruiseControl(bool)));
+
   // Keyboard focus
   setFocusPolicy(Qt::StrongFocus);
 }
@@ -67,6 +70,10 @@ void MainWindow::processButtonClick()
 
     toggleConnected(false);
     closeSocket();
+  }
+  else if (btn == ui->pushButton_trigger)
+  {
+
   }
 }
 
@@ -251,4 +258,22 @@ void MainWindow::sendAlive()
   datagram[0] = CMD_ALIVE;
   m_socket->write(datagram.data(), datagram.size());
 }
-
+void MainWindow::enabledCruiseControl(bool checked)
+{
+  if (checked)
+  {
+    sendControl(ui->spinBox_speed->value(), ui->spinBox_steer->value());
+  }
+  else
+  {
+    sendControl(0, 0);
+  }
+}
+void MainWindow::sendTrigger(quint8 value)
+{
+  QByteArray datagram;
+  datagram.resize(2);
+  datagram[0] = CMD_TRIGGER;
+  datagram[1] = value;
+  m_socket->write(datagram.data(), datagram.size());
+}
