@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
   // Buttons
   connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(processButtonClick()));
   connect(ui->pushButton_ende, SIGNAL(clicked()), this, SLOT(processButtonClick()));
+  connect(ui->pushButton_trigger, SIGNAL(clicked()), this, SLOT(processButtonClick()));
 
   // Cruise control checkbox
   connect(ui->checkBox_tempomat, SIGNAL(toggled(bool)), this, SLOT(enableCruiseControl(bool)));
