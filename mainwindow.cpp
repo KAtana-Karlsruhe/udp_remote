@@ -73,7 +73,7 @@ void MainWindow::processButtonClick()
   }
   else if (btn == ui->pushButton_trigger)
   {
-
+    sendTrigger(ui->spinBox_trigger->value());
   }
 }
 

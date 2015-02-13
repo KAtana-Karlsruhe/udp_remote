@@ -185,7 +185,7 @@
     <property name="title">
      <string>Trigger</string>
     </property>
-    <widget class="QSpinBox" name="spinBox_speed_3">
+    <widget class="QSpinBox" name="spinBox_trigger">
      <property name="geometry">
       <rect>
        <x>70</x>
