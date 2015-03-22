@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(processButtonClick()));
   connect(ui->pushButton_ende, SIGNAL(clicked()), this, SLOT(processButtonClick()));
   connect(ui->pushButton_trigger, SIGNAL(clicked()), this, SLOT(processButtonClick()));
+  connect(ui->pushButton_changeStrip, SIGNAL(clicked()), this, SLOT(processButtonClick()));
+  connect(ui->pushButton_junction_left, SIGNAL(clicked()), this, SLOT(processButtonClick()));
+  connect(ui->pushButton_junction_right, SIGNAL(clicked()), this, SLOT(processButtonClick()));
+  connect(ui->pushButton_junction_straight, SIGNAL(clicked()), this, SLOT(processButtonClick()));
 
   // Cruise control checkbox
   connect(ui->checkBox_tempomat, SIGNAL(toggled(bool)), this, SLOT(enableCruiseControl(bool)));
@@ -75,6 +79,22 @@ void MainWindow::processButtonClick()
   else if (btn == ui->pushButton_trigger)
   {
     sendTrigger(ui->spinBox_trigger->value());
+  }
+  else if (btn == ui->pushButton_changeStrip)
+  {
+   sendTrigger(6);
+  }
+  else if (btn == ui->pushButton_junction_right)
+  {
+   sendTrigger(7);
+  }
+  else if (btn == ui->pushButton_junction_straight)
+  {
+   sendTrigger(8);
+  }
+  else if (btn == ui->pushButton_junction_left)
+  {
+   sendTrigger(9);
   }
 }
 
